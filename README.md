@@ -19,7 +19,7 @@ If your source file is at `/home/esilverm/aps/hw1/CarValue.java`, this repositor
 python3 test.py hw1/CarValue.java
 ```
 
-will compile the program and run it using standard input. You;ll have the option to save your run as a test case. If you say yes, you'll get this prompt:
+will compile the program and run it using standard input. You'll have the option to save your run as a test case. If you say yes, you'll get this prompt:
 
 ```
 Where should this test case be stored?
