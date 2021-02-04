@@ -1,6 +1,6 @@
 # APS Test Cases and Test Runner
 
-Test Cases for Algoritmic Proble Solving (sic). Also included are some [starter files] that come with optimizations for I/O and are gradescope compatible.  
+Test Cases for Algorithmic Problem Solving. Also included are some [starter files] that come with optimizations for I/O and are gradescope compatible.  
 
 ## Using the Test Runner
 Use the command `python3 test.py <source_file> <test_path>` to run the test runner, and get more help by using `python3 test.py --help`.
