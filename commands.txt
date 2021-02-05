@@ -1,0 +1,1 @@
+deno run --allow-read --allow-write --allow-run  --unstable mod.ts ../ps1/car_value/CarValue.java ./hw1/car_value --debug
