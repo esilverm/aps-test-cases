@@ -32,6 +32,7 @@ will tell you what the output should have been, so that should help.
 const { args } = Deno;
 const { _: files, ...parsedArgs } = parse(args);
 const decoder = new TextDecoder("utf-8");
+const encoder = new TextEncoder();
 const debuginfo = (message) => console.info(bold("DEBUG") + `: ${message}`);
 
 if ("help" in parsedArgs || "h" in parsedArgs) {
@@ -96,9 +97,9 @@ const compile = Deno.run({
 const { code: compileCode } = await compile.status();
 
 const compileOutput = await compile.output();
-const compileOutStr = new TextDecoder().decode(compileOutput);
+const compileOutStr = decoder.decode(compileOutput);
 const compileError = await compile.stderrOutput();
-const compileErrorStr = new TextDecoder().decode(compileError);
+const compileErrorStr = decoder.decode(compileError);
 compile.close();
 
 if (compileCode !== 0) {
@@ -134,7 +135,68 @@ if (testPath === null) {
   console.log("Use Ctrl-D to end input (Ctrl-Z + Enter on Windows)");
   const tempPath = path.join(binDir, ".tmp");
 
-  Deno.exit(0);
+  let txt: string = "";
+  for await (let line of readLines(Deno.stdin)) {
+    txt += "\n" + line;
+  }
+
+  await Deno.writeTextFile(tempPath);
+
+  const { 
+    answer, 
+    err, 
+    success, 
+    timeElapsed 
+  } = await runCommand(command, encoder.encode(txt));
+
+  console.log(`\nProgram had output:\n${bold(answer)}`);
+  if (err) {
+    console.log(`with stderr: ${red(err)}`);
+  }
+  console.log(`...and ran in ${bold(timeElapsed.toFixed(9))} seconds\n`);
+
+  if (!success) {
+    Deno.exit(1);
+  }
+
+  let saveFile: string | null;
+
+  while (true) {
+    const saveRun = confirm("Save this run as a test case?");
+
+    if (!saveRun) {
+      Deno.exit(0);
+    }
+  
+    saveFile = prompt("Where should the test case be stored?");
+  
+    if (!await exists(saveFile.trim())) {
+      console.log("Error: file does not exist. Exiting...");
+      Deno.exit(0);
+    }
+
+    const saveContinue = confirm("Test case already exists, continue?");
+    
+    if (saveContinue) {
+      break;
+    }
+  }
+
+  const desc = prompt("Please create a description for this test case:");
+
+  const ansFileTxt = `
+---
+  description: ${desc.trim()}
+---
+${answer.trim()}
+`
+
+  await ensureDir(path.dirname(saveFile));
+  
+  Deno.writeTextFile(saveFile, txt.trim());
+  Deno.writeTextFile(saveFile + '-ans', `${ansFileTxt.trim()}\n`);
+
+  console.log(`Test case answer was stored at: ${saveFile}`);
 } else if (!Deno.lstatSync(testPath).isFile) {
   if ("debug" in parsedArgs) {
     debuginfo("Input folder: ", testPath);
@@ -154,7 +216,7 @@ if (testPath === null) {
     if ("debug" in parsedArgs) {
       debuginfo(`Found input file: ${dirEntry.name}`);
     }
-    if (await testCommand(command, path.join(testPath, dirEntry.name), true)) {
+    if (await testCommand(command, path.join(testPath, dirEntry.name))) {
       passing.push(dirEntry.name);
     } else {
       failing.push(dirEntry.name);
@@ -168,7 +230,7 @@ if (testPath === null) {
   if ("debug" in parsedArgs) {
     debuginfo(`Input file: ${testPath}`);
   }
-  testCommand(command, testPath, true);
+  testCommand(command, testPath);
 }
 
 async function testCommand(command, testFile): Promise<boolean> {
@@ -240,9 +302,9 @@ async function runCommand(command: string[], data) {
   const { code } = await cmd.status();
   const end = performance.now();
   const output = await cmd.output();
-  const outStr = new TextDecoder().decode(output);
+  const outStr = decoder.decode(output);
   const error = await cmd.stderrOutput();
-  const errorStr = new TextDecoder().decode(error);
+  const errorStr = decoder.decode(error);
   cmd.close();
   return {
     answer: outStr.trim(),
