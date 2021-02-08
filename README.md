@@ -3,11 +3,7 @@
 Test Cases for Algorithmic Problem Solving. Also included are some [starter files] that come with optimizations for I/O and are gradescope compatible.  
 
 ## Using the Test Runner
-In order to run the test runner you need to [download Deno](https://deno.land/#installation). Deno is a secure runtime for JavaScript and TypeScript built on Rust.
-
 Use the command `./run_tests <source_file> <test_path>` to run the test runner, and get more help by using `./run_tests --help`.
-
-The flags `-A` and `--unstable` allow for access to file system and other io tools as well as newer features (since this is a newer runtime).
 
 The test runner compiles your code and runs it; before compiling, it first copies your code into a file called `.build/Main.ext` where `ext` is the extension of your program, and the `.build` folder is located in the same directory as the test runner. Because of this, you can name your file whatever you want; if you're using Java, you can name your file `Polish.java` and have a main class called `Main` in that file, and it'll work both with the runner and with Gradescope.
 
