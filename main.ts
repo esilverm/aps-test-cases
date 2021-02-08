@@ -5,13 +5,6 @@ import { copy, ensureDir, exists } from "https://deno.land/std/fs/mod.ts";
 import { bold, green, red } from "https://deno.land/std/fmt/colors.ts";
 import { readLines } from "https://deno.land/std/io/mod.ts";
 
-/***
- * Flags:
- * deno run --allow-run mod.ts <source_file> <testPath> [--debug] [--help] [-h]
- * --debug: show debug information
- * -h, --help: show this message
- * 
- */
 
 const HELP_TEXT = `
 Hi! This is a test runner for APS. The arguments are:
