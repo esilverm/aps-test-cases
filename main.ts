@@ -9,7 +9,7 @@ import { readLines } from "https://deno.land/std/io/mod.ts";
 const HELP_TEXT = `
 Hi! This is a test runner for APS. The arguments are:
 
-deno run -A --unstable main.ts <source_file> <testPath> [--debug] [--help] [-h]
+./run_tests <source_file> <testPath> [--debug] [--help] [-h]
 
   source_file   The source file to compile.
   testPath     The path for test data. It can be a folder or file.
@@ -265,8 +265,8 @@ async function testCommand(command, testFile): Promise<boolean> {
           : decoder.decode(data)
       }`,
     );
-    console.log(`with output: ${bold(answer)}`);
-    console.log(`when correct output was: ${bold(parsedCorrectAnswer)}`);
+    console.log(`with output: \n${bold(answer)}`);
+    console.log(`when correct output was: \n${bold(parsedCorrectAnswer)}`);
 
     if (err !== "") {
       console.log(`with stderr: ${red(err)}`);
