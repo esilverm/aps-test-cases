@@ -300,7 +300,7 @@ async function runCommand(command: string[], data) {
   const errorStr = decoder.decode(error);
   cmd.close();
   return {
-    answer: outStr.trim(),
+    answer: outStr.substr(0, outStr.length - 1),
     err: errorStr,
     success: code == 0,
     timeElapsed: (end - start) / 1000,
