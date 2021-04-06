@@ -244,6 +244,15 @@ async function testCommand(command, testFile): Promise<boolean> {
   );
 
   if (answer === parsedCorrectAnswer) {
+    if (timeElapsed > 5) {
+      console.log(
+        `\n${red("✘")} Test case \`${bold(path.basename(testFile))}\` ${
+          red("timed out")
+        } but answer was ${green("correct")}`,
+      );
+      return false;
+    }
+
     console.log(
       `\n${green("✔")} Test case \`${
         bold(path.basename(testFile))
@@ -251,6 +260,15 @@ async function testCommand(command, testFile): Promise<boolean> {
     );
     return true;
   } else {
+    if (timeElapsed > 5) {
+      console.log(
+        `\n${red("✘")} Test case \`${bold(path.basename(testFile))}\` ${
+          red("timed out")
+        } and answer was ${red("incorrect")}`,
+      );
+      return false;
+    }
+
     console.log(
       `\n${red("✘")} Test case \`${bold(path.basename(testFile))}\` ${
         red("failed")
