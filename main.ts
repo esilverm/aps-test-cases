@@ -227,7 +227,7 @@ ${answer.trim()}
 }
 
 async function testCommand(command, testFile): Promise<boolean> {
-  const data = Deno.readFileSync(testFile);
+  const data = await Deno.readFile(testFile);
   const { answer, err, success, timeElapsed } = await runCommand(command, data);
 
   // look for answer file

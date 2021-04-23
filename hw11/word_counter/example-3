@@ -1,0 +1,1 @@
+printf("This string has %d words\n", 7);
